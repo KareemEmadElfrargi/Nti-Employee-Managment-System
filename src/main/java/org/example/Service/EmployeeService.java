@@ -11,4 +11,6 @@ public interface EmployeeService {
     Employee getEmployeeById(int id);
 
     List<Employee> getAllEmployees();
+
+    Employee giveRaise(int id, double percentage);
 }
