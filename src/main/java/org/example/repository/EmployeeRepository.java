@@ -1,6 +1,6 @@
 package org.example.repository;
 
-import org.example.Employee;
+import org.example.model.Employee;
 
 import java.util.List;
 public interface EmployeeRepository {

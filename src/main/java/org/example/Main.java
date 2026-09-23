@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.Service.EmployeeService;
 import org.example.config.AppConfig;
+import org.example.model.Employee;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {
@@ -9,13 +10,13 @@ public class Main {
         String activeProfile = args.length > 0 ? args[0] : "dev";
 
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-            context.getEnvironment().setActiveProfiles("prod");
+            context.getEnvironment().setActiveProfiles(activeProfile);
             context.register(AppConfig.class);
             context.refresh();
 
 
             EmployeeService employeeService = context.getBean(EmployeeService.class);
-            Employee employee = employeeService.addEmployee(new Employee(1, "Kareem Emad", "CS", 5000));
+            Employee employee = employeeService.addEmployee(new Employee(1, "Kareem Emad", "CS", 111111));
 
             System.out.println("Before raise: " + employee);
 

@@ -1,6 +1,6 @@
 package org.example.Service;
 
-import org.example.Employee;
+import org.example.model.Employee;
 
 import java.util.List;
 
