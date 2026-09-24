@@ -1,7 +1,6 @@
 package org.example.notification;
 
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Component

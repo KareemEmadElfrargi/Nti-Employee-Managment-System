@@ -1,8 +1,10 @@
 package org.example.notification;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component("emailNotifier")
+@Order(1)
 public class EmailNotifier implements Notifier {
 
     @Override
