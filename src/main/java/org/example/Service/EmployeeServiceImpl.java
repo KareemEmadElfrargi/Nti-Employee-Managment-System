@@ -1,6 +1,7 @@
 package org.example.Service;
 
 import org.example.model.Employee;
+import org.example.notification.NotificationManager;
 import org.example.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +12,18 @@ import java.util.NoSuchElementException;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final NotificationManager notificationManager;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, NotificationManager notificationManager) {
         this.employeeRepository = employeeRepository;
+        this.notificationManager = notificationManager;
     }
 
     @Override
     public Employee addEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+        Employee saved = employeeRepository.save(employee);
+        notificationManager.notifyAll("New employee added: " + saved.getName() + " (id " + saved.getId() + ")");
+        return saved;
     }
 
     @Override
@@ -45,6 +50,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         double newSalary = employee.getSalary() * (1 + percentage / 100);
         employee.setSalary(newSalary);
 
-        return employeeRepository.save(employee);
+        Employee updated = employeeRepository.save(employee);
+        notificationManager.notifyAll(updated.getName() + " (id " + updated.getId() + ") received a " + percentage + "% raise, new salary $" + String.format("%.2f", updated.getSalary()));
+        return updated;
     }
 }
