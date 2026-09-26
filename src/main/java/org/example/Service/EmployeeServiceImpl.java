@@ -1,8 +1,10 @@
 package org.example.Service;
 
+import org.example.audit.AuditLogger;
 import org.example.model.Employee;
 import org.example.notification.NotificationManager;
 import org.example.repository.EmployeeRepository;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +16,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final NotificationManager notificationManager;
     private final EmployeeValidator employeeValidator;
+    private final ObjectProvider<AuditLogger> auditLoggerProvider;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, NotificationManager notificationManager, EmployeeValidator employeeValidator) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, NotificationManager notificationManager,
+                                EmployeeValidator employeeValidator, ObjectProvider<AuditLogger> auditLoggerProvider) {
         this.employeeRepository = employeeRepository;
         this.notificationManager = notificationManager;
         this.employeeValidator = employeeValidator;
+        this.auditLoggerProvider = auditLoggerProvider;
     }
 
     @Override
@@ -26,6 +31,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeValidator.validate(employee);
         Employee saved = employeeRepository.save(employee);
         notificationManager.notifyAll("New employee added: " + saved.getName() + " (id " + saved.getId() + ")");
+        auditLoggerProvider.getObject().log("addEmployee: " + saved.getName() + " (id " + saved.getId() + ")");
         return saved;
     }
 
@@ -56,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee updated = employeeRepository.save(employee);
         notificationManager.notifyAll(updated.getName() + " (id " + updated.getId() + ") received a " + percentage + "% raise, new salary $" + String.format("%.2f", updated.getSalary()));
+        auditLoggerProvider.getObject().log("giveRaise: " + updated.getName() + " (id " + updated.getId() + ") -> $" + String.format("%.2f", updated.getSalary()));
         return updated;
     }
 }
