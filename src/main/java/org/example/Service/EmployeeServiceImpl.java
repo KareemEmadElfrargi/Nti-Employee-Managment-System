@@ -13,14 +13,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final NotificationManager notificationManager;
+    private final EmployeeValidator employeeValidator;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, NotificationManager notificationManager) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, NotificationManager notificationManager, EmployeeValidator employeeValidator) {
         this.employeeRepository = employeeRepository;
         this.notificationManager = notificationManager;
+        this.employeeValidator = employeeValidator;
     }
 
     @Override
     public Employee addEmployee(Employee employee) {
+        employeeValidator.validate(employee);
         Employee saved = employeeRepository.save(employee);
         notificationManager.notifyAll("New employee added: " + saved.getName() + " (id " + saved.getId() + ")");
         return saved;
