@@ -30,6 +30,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Value("${raise.max-percentage}")
     private double maxRaisePercentage;
 
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public String getCompanyCurrency() {
+        return companyCurrency;
+    }
+
+    public double getMaxRaisePercentage() {
+        return maxRaisePercentage;
+    }
+
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, NotificationManager notificationManager,
                                 EmployeeValidator employeeValidator, ObjectProvider<AuditLogger> auditLoggerProvider) {
         this.employeeRepository = employeeRepository;

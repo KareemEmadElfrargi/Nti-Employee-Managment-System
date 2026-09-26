@@ -16,6 +16,10 @@ public class NotificationManager {
         this.notifiers = notifiers;
     }
 
+    public int getRetryCount() {
+        return retryCount;
+    }
+
     public void notifyAll(String message) {
         for (Notifier notifier : notifiers) {
             sendWithRetry(notifier, message);
