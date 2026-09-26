@@ -7,6 +7,8 @@ import org.example.repository.EmployeeRepository;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -24,6 +26,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.notificationManager = notificationManager;
         this.employeeValidator = employeeValidator;
         this.auditLoggerProvider = auditLoggerProvider;
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("EmployeeServiceImpl initialized");
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("EmployeeServiceImpl destroyed");
     }
 
     @Override
