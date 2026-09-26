@@ -5,6 +5,7 @@ import org.example.model.Employee;
 import org.example.notification.NotificationManager;
 import org.example.repository.EmployeeRepository;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -19,6 +20,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final NotificationManager notificationManager;
     private final EmployeeValidator employeeValidator;
     private final ObjectProvider<AuditLogger> auditLoggerProvider;
+
+    @Value("${company.name}")
+    private String companyName;
+
+    @Value("${company.currency}")
+    private String companyCurrency;
+
+    @Value("${raise.max-percentage}")
+    private double maxRaisePercentage;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, NotificationManager notificationManager,
                                 EmployeeValidator employeeValidator, ObjectProvider<AuditLogger> auditLoggerProvider) {
@@ -62,6 +72,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (percentage <= 0) {
             throw new IllegalArgumentException("Raise percentage must be positive");
         }
+        if (percentage > maxRaisePercentage) {
+            throw new IllegalArgumentException("Raise percentage " + percentage + "% exceeds the maximum allowed " + maxRaisePercentage + "%");
+        }
 
         Employee employee = employeeRepository.findById(id);
         if (employee == null) {
@@ -73,7 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeValidator.validate(employee);
 
         Employee updated = employeeRepository.save(employee);
-        notificationManager.notifyAll(updated.getName() + " (id " + updated.getId() + ") received a " + percentage + "% raise, new salary $" + String.format("%.2f", updated.getSalary()));
+        notificationManager.notifyAll("[" + companyName + "] " + updated.getName() + " (id " + updated.getId() + ") received a " + percentage + "% raise, new salary " + companyCurrency + " " + String.format("%.2f", updated.getSalary()));
         auditLoggerProvider.getObject().log("giveRaise: " + updated.getName() + " (id " + updated.getId() + ") -> $" + String.format("%.2f", updated.getSalary()));
         return updated;
     }
