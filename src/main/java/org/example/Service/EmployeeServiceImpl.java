@@ -52,6 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         double newSalary = employee.getSalary() * (1 + percentage / 100);
         employee.setSalary(newSalary);
+        employeeValidator.validate(employee);
 
         Employee updated = employeeRepository.save(employee);
         notificationManager.notifyAll(updated.getName() + " (id " + updated.getId() + ") received a " + percentage + "% raise, new salary $" + String.format("%.2f", updated.getSalary()));
